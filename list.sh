@@ -130,7 +130,7 @@ if [ ${#args[@]} -ne 0  ];  then # parse arguments
          ;;
 
          *) # directory assignment
-            [ $chg_dir = yes ] && { echo 'set new target directory'; target_dir="$i";}
+            [ $chg_dir = yes ] && { target_dir="$i"; printf "set new target directory: %s/\n" "$target_dir"; }
          ;;
       esac 
   done
@@ -141,7 +141,7 @@ else       # no arguments
    find_type=file
    proc_type=
    show_file="yes"
-   show_dir="no"
+   show_dir="yes"
    chg_dir="no"
 fi
 
