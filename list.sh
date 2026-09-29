@@ -10,8 +10,8 @@ chg_dir="no"
 symb_link="no"
 debug_on='no'
 ori_dir=$PWD
-
-
+target_dir=
+filt_patt=
 
 str2array () { #  $1:V:xx string  $2: R:return array 
    local -n r_v="$2"
@@ -75,6 +75,7 @@ shw_ops () {
    echo show_dir=$show_dir
    echo chg_dir=$chg_dir
    echo symb_link=$symb_link
+   echo filt_patt=$filt_patt
    
    echo '##############'
 }
@@ -97,11 +98,20 @@ filelist () # R:$1
 local -n file_l=$1
 local tmp
 
-    tmp=$(shopt -p nullglob dotglob) # no .. & .
+    tmp=$(shopt -p nullglob dotglob nocasematch) # no .. & . & casematch
 
-    shopt -s nullglob dotglob
-    file_l=(*)                 # 
-
+    shopt -s nullglob dotglob nocasematch
+    file_l=(*)
+    
+    [ -n "$filt_patt" ] && {  
+      for i in "${!file_l[@]}"; 
+      do 
+         [[ ${file_l[$i]} == $filt_patt ]]  &&   continue 
+         [[ ${file_l[$i]} == "."$filt_patt ]] &&  continue   
+            
+         unset "file_l[$i]";
+      done   
+    }
     eval "$tmp"
 }
 
@@ -128,9 +138,14 @@ if [ ${#args[@]} -ne 0  ];  then # parse arguments
             i="${i#-}"   # remove '-'  
             [ -n "$i" ] && parse_inp "$i"
          ;;
-
-         *) # directory assignment
-            [ $chg_dir = yes ] && { target_dir="$i"; printf "set new target directory: %s/\n" "$target_dir"; }
+          
+         *) 
+            # directory assignment || glob pattern
+            if [ -d "$i" ] ;  then
+               [ "$chg_dir" = yes ] && { target_dir="$i"; printf "in target directory: %s/\n" "$target_dir"; }
+            else 
+               filt_patt="$i"
+            fi   
          ;;
       esac 
   done
