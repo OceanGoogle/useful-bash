@@ -123,7 +123,7 @@ shw_name () # $1:V file or dir name
          printf "%s" "$1"  
    fi   
    
-   [ -L "$1" ] && printf "     -> %s" "$(readlink "$1")"    
+   [ -L "$1" ] && { file_ls=$(ls -il "$1"); printf "     -> %s" "${file_ls#* -> }"; }    
 }
 
 #################################### main #####################################
