@@ -33,11 +33,8 @@ parse_inp () { # V:$1: arguments value (string)
          h* | 'Help') 
             proc_type="help"
          ;;
-         D*)
+         D* | d*)
             show_dir="only"
-         ;;
-         d*)
-            show_dir="yes"
          ;;
          F*)
             show_file="only"
