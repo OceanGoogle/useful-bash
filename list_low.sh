@@ -33,10 +33,9 @@ parse_inp ()
 { # V:$1: arguments value (string)  
     
     str2array "$1"
-    args=("${re_ary[@]}") 
 
-    for (( i=0; i<${#args[@]}; i++ )); do
-         case  "${args[i]}" in
+    for (( i=0; i<${#re_ary[@]}; i++ )); do
+         case  "${re_ary[i]}" in
          h* | 'Help') 
             proc_type="help"
          ;;
@@ -99,24 +98,22 @@ EOF
 
 filelist () # return file list
 {
-local file_l=()
 local tmp
 
     tmp=$(shopt -p nullglob dotglob nocasematch) # no .. & . & casematch
 
     shopt -s nullglob dotglob nocasematch
-    file_l=(*)
+    re_ary=(*)
     
     [ -n "$filt_patt" ] && {  
-      for i in "${!file_l[@]}"; 
+      for i in "${!re_ary[@]}"; 
       do 
-         [[ ${file_l[$i]} == $filt_patt ]]  &&   continue 
-         [[ ${file_l[$i]} == "."$filt_patt ]] &&  continue   
+         [[ ${re_ary[$i]} == $filt_patt ]]  &&   continue 
+         [[ ${re_ary[$i]} == "."$filt_patt ]] &&  continue   
             
-         unset "file_l[$i]";
+         unset "re_ary[$i]";
       done   
     }
-    re_ary=("${file_l[@]}")
     eval "$tmp"
 }
 
